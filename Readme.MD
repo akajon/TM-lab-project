@@ -4,7 +4,7 @@ The project demonstrates how OpenCV Python library's capabilites are used.
 The script was developed and tested in Ubuntu 20.04 WSL (version 1) running on an Windows 10 21H2 machine
 
 To run the script using a Python virtual environment please run the following commands inside the cloned repository:
-<ul>
+<ul type="none">
     <li>1. python3 -m virtualenv local</li>
     <li>2. source ./local/bin/activate</li>
     <li>3. pip3 install -r requirements.txt</li>
