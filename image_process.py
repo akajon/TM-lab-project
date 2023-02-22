@@ -9,6 +9,8 @@ class App:
     def __init__(self, master):
         self.master = master
         self.master.title("Image Converter")
+        self.master.maxsize(900, 600)
+        self.master.config(bg="#fafff4")
         # self.master.geometry("1280x720")
 
         # Create the GUI elements
@@ -138,7 +140,8 @@ class App:
             # Apply the perspective transform to the image
             M = cv2.getPerspectiveTransform(src, dst)
             warped = cv2.warpPerspective(self.processed_img , M, (500, 700))
-            self.write_to_image_out(warped)
+            img = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(img)
 
 if __name__ == '__main__':
     root = tk.Tk()
