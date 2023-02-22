@@ -1,6 +1,6 @@
 import cv2
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, Frame
 from PIL import Image, ImageTk
 import copy
 import numpy as np
@@ -9,37 +9,44 @@ class App:
     def __init__(self, master):
         self.master = master
         self.master.title("Image Converter")
-        self.master.maxsize(900, 600)
+        # self.master.maxsize(1000, 1000)
         self.master.config(bg="#fafff4")
-        # self.master.geometry("1280x720")
+        self.master.geometry("1050x650")
+
+        left_frame = Frame(self.master, bg='grey')
+        left_frame.grid(row=0, column=0, padx=10, pady=5)
+
+        right_frame = Frame(self.master, bg='grey')
+        right_frame.grid(row=0, column=1, padx=10, pady=5)
 
         # Create the GUI elements
-        self.browse_button = tk.Button(self.master, text="Browse", command=self.browse_image)
-        self.convert_button = tk.Button(self.master, text="Convert to Grayscale", command=self.convert_to_grayscale)
-        self.draw_line_button = tk.Button(self.master, text="Draw a line", command=self.draw_a_line)
-        self.detect_faces_button = tk.Button(self.master, text="Detect faces", command=self.detect_faces)
-        self.resize_up_button = tk.Button(self.master, text="Resize to 700x700", command=self.resize_up)
-        self.resize_down_button = tk.Button(self.master, text="Resize to 300x300", command=self.resize_down)
-        self.draw_an_elipse_button = tk.Button(self.master, text="Draw an elipse", command=self.draw_an_elipse)
-        self.add_blur_button = tk.Button(self.master, text="Blur image", command=self.add_blur)
-        self.canny_edge_button = tk.Button(self.master, text="Canny edge detection", command=self.canny_edge_detection)
-        self.warp_button = tk.Button(self.master, text="Warp Perspective", command=self.warp_perspective)
-        self.image_src = tk.Label(self.master)
-        self.image_out = tk.Label(self.master)
+        self.browse_button = tk.Button(left_frame, text="Browse for image", command=self.browse_image,
+            background='#64c47d', width=36)
+        self.convert_button = tk.Button(left_frame, text="Convert to Grayscale", command=self.convert_to_grayscale, width=15)
+        self.draw_line_button = tk.Button(left_frame, text="Draw a line", command=self.draw_a_line, width=15)
+        self.detect_faces_button = tk.Button(left_frame, text="Detect faces", command=self.detect_faces, width=15)
+        self.resize_up_button = tk.Button(left_frame, text="Resize to 600x600", command=self.resize_up, width=15)
+        self.resize_down_button = tk.Button(left_frame, text="Resize to 300x300", command=self.resize_down, width=15)
+        self.draw_an_elipse_button = tk.Button(left_frame, text="Draw an elipse", command=self.draw_an_elipse, width=15)
+        self.add_blur_button = tk.Button(left_frame, text="Blur image", command=self.add_blur, width=15)
+        self.canny_edge_button = tk.Button(left_frame, text="Canny edge detection", command=self.canny_edge_detection, width=15)
+        self.warp_button = tk.Button(left_frame, text="Warp Perspective", command=self.warp_perspective, width=15)
+        self.image_src = tk.Label(left_frame)
+        self.image_out = tk.Label(right_frame)
 
         # Set the layout of the GUI elements
-        self.browse_button.grid(row=0, column=0, padx=5, pady=5)
-        self.convert_button.grid(row=0, column=1, padx=5, pady=5)
-        self.draw_line_button.grid(row=0, column=2, padx=5, pady=5)
-        self.detect_faces_button.grid(row=0, column=3, padx=5, pady=5)
-        self.resize_up_button.grid(row=0, column=4, padx=5, pady=5)
-        self.resize_down_button.grid(row=0, column=5, padx=5, pady=5)
-        self.draw_an_elipse_button.grid(row=0, column=6, padx=5, pady=5)
-        self.add_blur_button.grid(row=0, column=7, padx=5, pady=5)
-        self.canny_edge_button.grid(row=0, column=8, padx=5, pady=5)
-        self.warp_button.grid(row=0, column=9, padx=5, pady=5)
-        self.image_src.grid(row=1, column=0, columnspan=2)
-        self.image_out.grid(row=1, column=10, columnspan=2)
+        self.browse_button.grid(row=1, column=0, columnspan=2 , padx=5, pady=5)
+        self.convert_button.grid(row=2, column=0, padx=5, pady=5)
+        self.draw_line_button.grid(row=2, column=1, padx=5, pady=5)
+        self.detect_faces_button.grid(row=3, column=0, padx=5, pady=5)
+        self.resize_up_button.grid(row=3, column=1, padx=5, pady=5)
+        self.resize_down_button.grid(row=4, column=0, padx=5, pady=5)
+        self.draw_an_elipse_button.grid(row=4, column=1, padx=5, pady=5)
+        self.add_blur_button.grid(row=5, column=0, padx=5, pady=5)
+        self.canny_edge_button.grid(row=5, column=1, padx=5, pady=5)
+        self.warp_button.grid(row=6, column=0, padx=5, pady=5)
+        self.image_src.grid(row=0, column=0, columnspan=2)
+        self.image_out.grid(row=0, column=0)
 
         self.original_img = None
         self.processed_img = None
@@ -97,14 +104,12 @@ class App:
 
     def resize_up(self):
         if self.original_img is not None:
-            self.processed_img = copy.deepcopy(self.original_img)
             self.processed_img = cv2.resize(self.processed_img, (600, 600))
             img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
             self.write_to_image_out(img)
 
     def resize_down(self):
         if self.original_img is not None:
-            self.processed_img = copy.deepcopy(self.original_img)
             self.processed_img = cv2.resize(self.processed_img, (300, 300))
             img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
             self.write_to_image_out(img)
@@ -127,20 +132,20 @@ class App:
         if self.original_img is not None:
             self.processed_img = copy.deepcopy(self.original_img)
             gray = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2GRAY)
-            edges = cv2.Canny(gray, 100, 200)
-            img = cv2.cvtColor(edges, cv2.COLOR_GRAY2RGB)
+            self.processed_img = cv2.Canny(gray, 100, 200)
+            img = cv2.cvtColor(self.processed_img, cv2.COLOR_GRAY2RGB)
             self.write_to_image_out(img)
 
     def warp_perspective(self):
         if self.original_img is not None:
             self.processed_img = copy.deepcopy(self.original_img)
             src = np.float32([[0, 0], [400, 0], [0, 400], [400, 400]])
-            dst = np.float32([[0, 0], [600, 0], [0, 400], [400, 600]])
+            dst = np.float32([[40, 0], [350, 10], [0, 450], [450, 300]])
 
             # Apply the perspective transform to the image
             M = cv2.getPerspectiveTransform(src, dst)
-            warped = cv2.warpPerspective(self.processed_img , M, (500, 700))
-            img = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB)
+            self.processed_img = cv2.warpPerspective(self.processed_img , M, (400, 400))
+            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
             self.write_to_image_out(img)
 
 if __name__ == '__main__':
