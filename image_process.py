@@ -22,6 +22,8 @@ class App:
         # Create the GUI elements
         self.browse_button = tk.Button(left_frame, text="Browse for image", command=self.browse_image,
             background='#64c47d', width=36)
+        self.save_button = tk.Button(left_frame, text="Save image", command=self.save_image,
+            background='#64c47d', width=36)
         self.convert_button = tk.Button(left_frame, text="Convert to Grayscale", command=self.convert_to_grayscale, width=15)
         self.draw_line_button = tk.Button(left_frame, text="Draw a line", command=self.draw_a_line, width=15)
         self.detect_faces_button = tk.Button(left_frame, text="Detect faces", command=self.detect_faces, width=15)
@@ -45,6 +47,7 @@ class App:
         self.add_blur_button.grid(row=5, column=0, padx=5, pady=5)
         self.canny_edge_button.grid(row=5, column=1, padx=5, pady=5)
         self.warp_button.grid(row=6, column=0, padx=5, pady=5)
+        self.save_button.grid(row=7, column=0, columnspan=2 , padx=5, pady=5)
         self.image_src.grid(row=0, column=0, columnspan=2)
         self.image_out.grid(row=0, column=0)
 
@@ -65,7 +68,18 @@ class App:
             self.image_src.configure(image=img)
             self.image_src.image = img
             self.image_out.image = None
-        
+
+    def save_image(self):
+        # Allow the user to select save path
+        file = filedialog.asksaveasfile(mode='w', defaultextension=".png")
+        print(str(file.name))
+
+        if file:
+            # Save image
+            img = cv2.cvtColor(self.processed_img, cv2.COLOR_RGB2BGR)
+            status = cv2.imwrite(file.name, img)
+            print(status)
+
     def write_to_image_out(self, image):
         image = Image.fromarray(image)
         image = ImageTk.PhotoImage(image=image)
@@ -84,8 +98,8 @@ class App:
             self.processed_img = copy.deepcopy(self.original_img)
             # Draw a line on the image
             cv2.line(self.processed_img, (0, 0), (self.processed_img.shape[1], self.processed_img.shape[0]), (0, 0, 0), 3)
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def detect_faces(self):
         if self.original_img is not None:
@@ -99,42 +113,42 @@ class App:
             for (x, y, w, h) in faces:
                 cv2.rectangle(self.processed_img, (x, y), (x+w, y+h), (0, 0, 255), 2)
             
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def resize_up(self):
         if self.original_img is not None:
             self.processed_img = cv2.resize(self.processed_img, (600, 600))
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            # self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def resize_down(self):
         if self.original_img is not None:
             self.processed_img = cv2.resize(self.processed_img, (300, 300))
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            # self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def draw_an_elipse(self):
         if self.original_img is not None:
             self.processed_img = copy.deepcopy(self.original_img)
             cv2.ellipse(self.processed_img, (250, 250), (100, 50), 0, 0, 360, (0, 0, 0), 2)
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def add_blur(self):
         if self.original_img is not None:
             self.processed_img = copy.deepcopy(self.original_img)
             self.processed_img = cv2.GaussianBlur(self.processed_img, (5, 5), 0)
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def canny_edge_detection(self):
         if self.original_img is not None:
             self.processed_img = copy.deepcopy(self.original_img)
             gray = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2GRAY)
             self.processed_img = cv2.Canny(gray, 100, 200)
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_GRAY2RGB)
-            self.write_to_image_out(img)
+            self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_GRAY2RGB)
+            self.write_to_image_out(self.processed_img)
 
     def warp_perspective(self):
         if self.original_img is not None:
@@ -145,8 +159,8 @@ class App:
             # Apply the perspective transform to the image
             M = cv2.getPerspectiveTransform(src, dst)
             self.processed_img = cv2.warpPerspective(self.processed_img , M, (400, 400))
-            img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
-            self.write_to_image_out(img)
+            self.processed_img = cv2.cvtColor(self.processed_img, cv2.COLOR_BGR2RGB)
+            self.write_to_image_out(self.processed_img)
 
 if __name__ == '__main__':
     root = tk.Tk()
